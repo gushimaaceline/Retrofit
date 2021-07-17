@@ -1,8 +1,8 @@
 package com.example.retrofit
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPosts() {
+//        rv_posts= findViewById(R.id.rv_posts)
         val retrofit = ApiClient.buildApiClient(ApiInterface::class.java)
         val request = retrofit.getPosts()
         request.enqueue(object : Callback<List<Post>> {
@@ -28,13 +29,17 @@ class MainActivity : AppCompatActivity() {
                 Response<List<Post>>
             ) {
                 if (response.isSuccessful) {
-                    var posts = response.body()
+                    var posts = response.body()!!//This is a list, the exclamation is to assert the value hold by variable not to be null
+                    rv_posts.layoutManager= LinearLayoutManager(baseContext)
+                    rv_posts.adapter= PostsAdapter(posts,baseContext)
 
 
-                    rv_posts.layoutManager =LinearLayoutManager(baseContext)
+
+//                    rv_posts.layoutManager =LinearLayoutManager(baseContext)
 //                        GridLayoutManager(this@MainActivity,2)
                         //LinearLayoutManager(this@MainActivity)
-                    rv_posts.adapter = PostsAdapter(posts!!)
+
+
 
 
 //                    var posts= PostsAdapter(posts,baseContext)
@@ -47,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
 //                    Toast.makeText(
 //                        baseContext, "${posts!!.size} posts", Toast.LENGTH_LONG
-//                    ).show()
+//                    ).show() if there is an error show it
                 }
             }
 
